@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#08295c">
+<title>Eólica - Sistema de Energía</title>
+<style>
+:root{
+  --navy:#08295c;
+  --blue:#123f91;
+  --sky:#2f80ed;
+  --bg:#f5f8f8;
+  --card:#ffffff;
+  --muted:#718096;
+  --line:#e9eef5;
+  --green:#159a67;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--navy);
+  font-family:Arial,Helvetica,sans-serif;
+}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:90px}
+.top{
+  background:var(--bg);padding:22px 22px 12px;display:flex;align-items:center;
+  gap:14px;position:sticky;top:0;z-index:5
+}
+.back{
+  width:50px;height:50px;border-radius:50%;border:0;background:white;
+  color:var(--navy);font-size:28px;box-shadow:0 2px 8px #dfe6ee;cursor:pointer
+}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:13px;color:var(--muted);margin-top:3px}
+.content{padding:10px 22px}
+.hero{
+  background:linear-gradient(145deg,#0b3777,#1c64bd);
+  color:white;border-radius:26px;padding:24px;box-shadow:0 10px 28px #cbd8e8;
+  overflow:hidden;position:relative
+}
+.hero h1{margin:0 0 8px;font-size:28px}
+.hero p{margin:0;color:#dcecff;line-height:1.5}
+.turbine{
+  height:150px;display:flex;align-items:center;justify-content:center;
+  position:relative;margin:5px 0 0
+}
+.windmill{position:relative;width:110px;height:130px}
+.tower{
+  position:absolute;bottom:5px;left:49px;width:13px;height:92px;
+  background:linear-gradient(90deg,#dfe9f5,#fff,#b7c7da);
+  clip-path:polygon(35% 0,65% 0,100% 100%,0 100%)
+}
+.hub{position:absolute;top:21px;left:45px;width:23px;height:23px;border-radius:50%;background:#fff;z-index:2}
+.blades{position:absolute;top:32px;left:56px;width:0;height:0;transform-origin:0 0;animation:spin 4s linear infinite}
+.blade{
+  position:absolute;left:-5px;top:-6px;width:72px;height:11px;background:#fff;
+  border-radius:100% 8px 8px 100%;transform-origin:5px 5px
+}
+.blade:nth-child(1){transform:rotate(0deg)}
+.blade:nth-child(2){transform:rotate(120deg)}
+.blade:nth-child(3){transform:rotate(240deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.stat{background:white;border-radius:18px;padding:17px;box-shadow:0 3px 12px #e0e7ef}
+.stat .label{font-size:13px;color:var(--muted)}
+.stat .value{font-size:24px;font-weight:700;margin-top:5px}
+.stat .green{color:var(--green)}
+.section-title{font-size:22px;margin:28px 0 13px}
+.card{
+  background:white;border-radius:20px;padding:20px;margin-bottom:13px;
+  box-shadow:0 3px 12px #e4e9ef
+}
+.row{display:flex;align-items:center;gap:14px}
+.icon{
+  min-width:46px;height:46px;border-radius:15px;background:#eef5ff;
+  display:flex;align-items:center;justify-content:center;font-size:23px
+}
+.card h3{margin:0 0 5px;font-size:17px}
+.card p{margin:0;color:#5f6f83;line-height:1.5;font-size:14px}
+.progress{height:9px;background:#e8eef5;border-radius:99px;overflow:hidden;margin-top:14px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,#2f80ed,#1bb979);border-radius:99px}
+.calc input{
+  width:100%;padding:14px;border:1px solid #dce4ee;border-radius:12px;
+  margin:7px 0 12px;font-size:16px
+}
+button.primary{
+  width:100%;border:0;border-radius:13px;padding:14px;background:var(--blue);
+  color:white;font-size:16px;font-weight:700;cursor:pointer
+}
+.result{
+  margin-top:14px;padding:14px;border-radius:13px;background:#edf8f3;
+  color:#08734b;font-weight:700;text-align:center;display:none
+}
+.nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:min(520px,100%);background:white;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);padding:9px 12px 12px;z-index:10
+}
+.nav button{border:0;background:transparent;color:#718096;font-size:11px;cursor:pointer}
+.nav .active{color:var(--blue);font-weight:700}
+.nav span{display:block;font-size:21px;margin-bottom:3px}
+.small{font-size:12px;color:var(--muted);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <button class="back" onclick="history.back()" aria-label="Volver">‹</button>
+    <div>
+      <div class="title">Energía Eólica</div>
+      <div class="sub">Sistema de monitoreo renovable</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="hero">
+      <h1>Parque eólico</h1>
+      <p>Consulta en un solo lugar la generación, velocidad del viento y estado de los aerogeneradores.</p>
+      <div class="turbine">
+        <div class="windmill">
+          <div class="tower"></div>
+          <div class="hub"></div>
+          <div class="blades">
+            <div class="blade"></div><div class="blade"></div><div class="blade"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="label">Generación actual</div><div class="value" id="power">2.48 MW</div></div>
+      <div class="stat"><div class="label">Velocidad del viento</div><div class="value">11.6 m/s</div></div>
+      <div class="stat"><div class="label">Energía de hoy</div><div class="value">38.7 MWh</div></div>
+      <div class="stat"><div class="label">Disponibilidad</div><div class="value green">96%</div></div>
+    </div>
+
+    <h2 class="section-title">Estado de los aerogeneradores</h2>
+
+    <div class="card">
+      <div class="row">
+        <div class="icon">🌬️</div>
+        <div><h3>Aerogenerador 01</h3><p>Operando normalmente · 820 kW</p></div>
+      </div>
+      <div class="progress"><span style="width:82%"></span></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div class="icon">⚡</div>
+        <div><h3>Aerogenerador 02</h3><p>Operando normalmente · 910 kW</p></div>
+      </div>
+      <div class="progress"><span style="width:91%"></span></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div class="icon">✓</div>
+        <div><h3>Aerogenerador 03</h3><p>Operando normalmente · 750 kW</p></div>
+      </div>
+      <div class="progress"><span style="width:75%"></span></div>
+    </div>
+
+    <h2 class="section-title">Calculadora de energía</h2>
+    <section class="card calc">
+      <p class="small">Calcula una estimación sencilla de energía producida a partir de la potencia y las horas de operación.</p>
+      <label for="potencia">Potencia del aerogenerador (kW)</label>
+      <input id="potencia" type="number" min="0" placeholder="Ej. 2500">
+      <label for="horas">Horas de funcionamiento</label>
+      <input id="horas" type="number" min="0" placeholder="Ej. 8">
+      <button class="primary" onclick="calcular()">Calcular energía</button>
+      <div class="result" id="resultado"></div>
+    </section>
+
+    <h2 class="section-title">¿Cómo funciona?</h2>
+    <section class="card">
+      <div class="row">
+        <div class="icon">1</div>
+        <div><h3>El viento mueve las palas</h3><p>La energía cinética del viento hace girar el rotor.</p></div>
+      </div>
+    </section>
+    <section class="card">
+      <div class="row">
+        <div class="icon">2</div>
+        <div><h3>El generador produce electricidad</h3><p>El movimiento mecánico se transforma en energía eléctrica.</p></div>
+      </div>
+    </section>
+    <section class="card">
+      <div class="row">
+        <div class="icon">3</div>
+        <div><h3>La energía se distribuye</h3><p>La electricidad generada puede integrarse a una red eléctrica.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <button class="active"><span>⌂</span>Inicio</button>
+    <button onclick="document.querySelector('.section-title').scrollIntoView({behavior:'smooth'})"><span>⚡</span>Energía</button>
+    <button onclick="document.querySelector('.calc').scrollIntoView({behavior:'smooth'})"><span>▣</span>Calcular</button>
+    <button onclick="alert('Sistema eólico educativo\\nMonitoreo básico de generación y viento.')"><span>ⓘ</span>Info</button>
+  </nav>
+</div>
+
+<script>
+function calcular(){
+  const potencia = parseFloat(document.getElementById('potencia').value);
+  const horas = parseFloat(document.getElementById('horas').value);
+  const resultado = document.getElementById('resultado');
+
+  if(!Number.isFinite(potencia) || !Number.isFinite(horas) || potencia < 0 || horas < 0){
+    resultado.style.display='block';
+    resultado.textContent='Ingresa valores válidos.';
+    return;
+  }
+
+  const energia = potencia * horas;
+  resultado.style.display='block';
+  resultado.textContent = 'Energía estimada: ' + energia.toLocaleString('es-CO') + ' kWh';
+}
+</script>
+</body>
+</html>
